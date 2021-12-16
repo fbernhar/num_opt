@@ -1,0 +1,25 @@
+function [output] = Armijo_Rule(func,delta_func, x, d, alpha)
+%% Armijo Linesearch
+%
+%disp('Armijo_Rule')
+%% Implementation of the Algorithm
+iter = 0;
+max_it = 100;
+beta = 0.5;
+sigma = 10.0e-4;
+
+while iter < max_it
+    if func(x+alpha*d) <= func(x)+sigma*alpha*(delta_func(x)'*d)
+        while (func(x+alpha*d)<func(x)+sigma*alpha*(delt_func(x)'*d))
+        alpha=alpha/beta;
+        end
+        alpha = alpha * beta;
+    else
+        
+    end
+    alpha = beta * alpha;
+    iter = iter +1;
+end
+output = alpha;
+end
+

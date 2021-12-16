@@ -1,0 +1,71 @@
+%% 2. Kleines Projekt  zur Numerischen Optimierung
+% Quasi-Newton-Verfahren & Gaus-Newton-Verfahren
+% Florian Bernhard & Maxim Dudin
+%% Augabe 4.
+% Teil 1.
+f = @(x)((x(1).^2 + x(2) -11).^2 + (x(1) + x(2).^2 -7).^2);
+grad_f = @(x)([ 2 * (x(1).^2 + x(2) - 11) * 2 * x(1) + 2 * (x(1) + x(2).^2 -7) * 1  ;...
+    2 * (x(1).^2 +x (2) - 11)* 1 + 2 * (x(1) + x(2).^2 -7 ) * 2 * x(2) ]);
+
+x0 = [2;2];
+options = optimset('Display','iter','Algorithm','quasi-newton','HessUpdate','bfgs');
+[x_fminunc,fval,exitflag,struct_inf_fminunc] = fminunc(f,x0,options);
+[x_global_bfgs, struct_inf_global_bfgs] = Global_BFGS(f,grad_f,x0, 1.0e-5);
+
+
+% Teil 2.
+N = 9;
+syms x [1 N];
+
+x0 = rand(N,1)*10;
+g = sum(((1-x(1:N-1)).^2+100*(x(2:N)-x(1:N-1).^2).^2));
+grad_g = jacobian(g);
+
+g = matlabFunction(g);
+grad_g = matlabFunction(grad_g);
+
+options = optimset('Display','iter','Algorithm','quasi-newton','HessUpdate','bfgs');
+fminunc(@(x) functrans(g,x),x0,options);
+%[x_global_bfgs, struct_inf_global_bfgs] = Global_BFGS(@(x)functrans(g,x),@(x) functrans(grad_g,x),x0, 1.0e-5);
+
+%% Aufgabe 6
+fun = @(x, xdata) x(1).*exp(x(2).*xdata);
+x = [1,1]';
+xdata = [0,1,2,3]';
+ydata = [2.0, 0.7, 0.3, 0.1]';
+[xk, residuum, jacob, info] = GaussNewton(fun,x,xdata,ydata, 1e-6, 100, 1);
+disp(['stopped after: ', num2str(info.num_iter), ' iterations'])
+disp(['reason: ', info.stopping_reason])
+disp(['xk: ', mat2str(xk)])
+disp(['residuum: ', mat2str(residuum)])
+disp(['jacobian: ', mat2str(jacob)])
+
+disp(['solution with  lsqcurvefit:', mat2str(lsqcurvefit(fun,x,xdata,ydata))])
+
+% second test
+g = @(x,xdata) x(1).*exp(-(x(2)^2 + x(3)^2).*xdata).*(sinh(x(3)^2.*xdata))./x(3)^2;
+xdata = (6:6:180)';
+%x = [0.1,0.01,0.01]';
+x = [10,0.05, 0.1]';
+%x = [50,0.05, 0.1]';
+
+ydata = [24.19, 35.34, 43.43, 42.63, 49.92, 51.53,...
+    57.39, 59.56, 55.60, 51.91, 58.27, 62.99, ...
+    52.99, 53.83, 59.37, 62.35, 61.84, 61.62, ...
+    49.64, 57.81, 54.79, 50.38, 43.85, 45.16, ...
+    46.72, 40.68, 35.14, 45.47, 42.40, 55.21]';
+[xk, residuum, jacob, info] = GaussNewton(g,x,xdata,ydata, 1e-10, 100, 1);
+disp(['stopped after: ', num2str(info.num_iter), ' iterations'])
+disp(['reason: ', info.stopping_reason])
+disp(['xk: ', mat2str(xk)])
+disp(['residuum: ', mat2str(residuum)])
+disp(['jacobian: ', mat2str(jacob)])
+
+disp(['solution with  lsqcurvefit:', mat2str(lsqcurvefit(g,x,xdata,ydata))])
+y_approx = g(xk,xdata);
+figure; hold on
+plot(xdata, )
+
+
+
+

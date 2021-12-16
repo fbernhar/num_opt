@@ -1,0 +1,33 @@
+function [] = global_newton_method(func, x0, tol, max_it)
+%% Globalisiertes Newton-Verfahren
+%   func: Die hier betrachtete Funktion 
+%   x:    Der Startvektor für die Funktion *func*
+%   tol:  Die Toleranz zwecks des Abbruchskriterium
+%   max_it: Die maximale Anzahl an Iterationen zwecks des
+%   Abbruchskriteriums.
+%disp('global newton method')
+%% Implementierung des Algorithmus
+iter  = 0;
+err = 2 * tol;
+x = x0;
+
+
+while err<tol && iter < max_it
+    
+    %d = hesse_func(x)\-delta_func(x)
+    d =
+    if delta_func(x)' * d > - roh*norm(d)^p
+        d = -delta_func(x);
+    end
+    alpha = Wolfe_Powell(func, delta_func , x, d, 1);
+    x = x + alpha * d;
+    
+    err = norm(delta_func(x));
+    iter = iter +1;
+    
+end
+
+
+
+end
+
